@@ -5,11 +5,13 @@
 </template>
 
 <script>
+import VueBaseComponent from '../components/BaseComponent.vue'
+
 export default {
   name: 'VueInputDate',
+  extends: VueBaseComponent,
   data () {
     return {
-      id: null,
       input: ""
     }
   },
@@ -67,7 +69,6 @@ export default {
       return this.batch(table, 7)
     }
   },
-	created () { this.id = this.$options.name + this._uid },
   methods: {
     range (n, i = 0) { return Array.from(new Array(n), (v, k) => k + i) },
     batch (arr, n) {

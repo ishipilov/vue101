@@ -5,11 +5,13 @@
 </template>
 
 <script>
+import VueBaseComponent from '../components/BaseComponent.vue'
+
 export default {
   name: 'VueInputTime',
+  extends: VueBaseComponent,
   data () {
     return {
-      id: null,
       time: "",
       input: {
         hours: "0",
@@ -34,7 +36,6 @@ export default {
       }
     }
   },
-	created () { this.id = this.$options.name + this._uid },
   methods: {
     setNow () {
       let withSeconds = false
