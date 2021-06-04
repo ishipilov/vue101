@@ -81,9 +81,9 @@ export default {
       let re = new RegExp(/^\d{4}-\d{1,2}-\d{1,2}$/) // YYYY-MM-DD or YYYY-M-D
       let arr = str.match(re) ? str.split("-").map(e => parseInt(e)) : []
       let date = new Date()
-      if (arr[0]) date.setFullYear(arr[0])
-      if (arr[1]) date.setMonth(arr[1] - 1)
-      if (arr[2]) date.setDate(arr[2])
+      if (arr[0] != undefined) date.setFullYear(arr[0])
+      if (arr[1] != undefined) date.setMonth(arr[1] - 1)
+      if (arr[2] != undefined) date.setDate(arr[2])
       date.setHours(0)
       date.setMinutes(0)
       date.setSeconds(0)
