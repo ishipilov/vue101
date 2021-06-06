@@ -31,10 +31,11 @@
       <template v-slot="{time ,input, step ,setNow, setTime}">
         <input type="time" :step="step" :value="time" @change="setTime($event.target.value)">
         <button @click="setNow">Now</button>
+        <button @click="setTime('')">Clear</button>
         <div>
-          <input v-model="input.hours" type="range" class="custom-range" min="0" max="23" step="1">
-          <input v-model="input.minutes" type="range" class="custom-range" min="0" max="59" step="1">
-          <input v-model="input.seconds" type="range" class="custom-range" min="0" max="59" step="1">
+          <input v-model="input.hours" type="range" min="0" max="23" step="1">
+          <input v-model="input.minutes" type="range" min="0" max="59" step="1">
+          <input v-model="input.seconds" type="range" min="0" max="59" step="1">
         </div>
       </template>
     </vue-input-time>
