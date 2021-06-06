@@ -32,7 +32,7 @@ export default {
         if (this.step == 1) {
           arr.push(val.seconds)
         }
-        this.time = arr.map(e => e.toString().length == 2 ? e : 0 + e.toString()).join(":")
+        this.time = arr.map(e => e.length == 2 ? e : "0" + e).join(":")
       }
     }
   },
@@ -43,17 +43,18 @@ export default {
       if (parseInt(this.input.hours) == d.getHours() && parseInt(this.input.minutes) == d.getMinutes()) {
         withSeconds = true
       }
-      this.input.hours = d.getHours()
-      this.input.minutes = d.getMinutes()
+      this.input.hours = d.getHours().toString()
+      this.input.minutes = d.getMinutes().toString()
       if (withSeconds) {
-        this.input.seconds = d.getSeconds()
+        this.input.seconds = d.getSeconds().toString()
       }
     },
-    setTime (value) {
-      let arr = value.split(":") || []
-      if (arr[0] != undefined) this.input.hours = arr[0]
-      if (arr[1] != undefined) this.input.minutes = arr[1]
-      if (arr[2] != undefined) this.input.seconds = arr[2]
+    setTime (value = "") {
+      let str = value.split(":")
+      let arr = ["0", "0", "0"].map((v, k) => str[k] && str[k].length > 0 ? str[k] : v)
+      this.input.hours = arr[0]
+      this.input.minutes = arr[1]
+      this.input.seconds = arr[2]
     }
   }
 }
