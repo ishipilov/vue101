@@ -51,6 +51,9 @@ export default {
       deep: true,
       immediate: true,
       handler (val) {
+        if (val.hours && !val.minutes) this.input.minutes = "00"
+        if (val.hours && val.hours.length < 2) this.input.hours = this.prependZero(val.hours)
+        if (val.minutes && val.minutes.length < 2) this.input.minutes = this.prependZero(val.minutes)
         if (val.hours && val.minutes) {
           let arr = [val.hours, val.minutes]
           if (val.seconds) arr.push(val.seconds)
@@ -66,9 +69,11 @@ export default {
       let d = new Date()
       let hours = d.getHours().toString()
       let minutes = d.getMinutes().toString()
-      if (this.input.seconds || (this.input.hours == hours && this.input.minutes == minutes)) this.input.seconds = d.getSeconds().toString()
-      this.input.minutes = minutes
-      this.input.hours = hours
+      if (this.input.seconds || (this.input.hours == hours && this.input.minutes == minutes)) {
+        this.input.seconds = this.prependZero(d.getSeconds().toString())
+      }
+      this.input.minutes = this.prependZero(minutes.toString())
+      this.input.hours = this.prependZero(hours.toString())
     },
     prependZero (str, len = 2) {
       let substr = ""
