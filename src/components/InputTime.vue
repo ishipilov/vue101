@@ -2,7 +2,6 @@
   <div>
     <slot :id="$options.name + _uid"
           :input="input"
-          :clock="clock"
           :step="step"
           :set-now="setNow"
     ></slot>
@@ -21,9 +20,7 @@ export default {
   data () {
     return {
       input: {
-        time: this.time
-      },
-      clock: {
+        time: this.time,
         hours: "",
         minutes: "",
         seconds: ""
@@ -31,16 +28,23 @@ export default {
     }
   },
   computed: {
-    step () { return this.clock.seconds ? 1 : 60 }
+    step () { return this.input.seconds ? 1 : 60 },
+    clock () {
+      return {
+        hours: this.input.hours,
+        minutes: this.input.minutes,
+        seconds: this.input.seconds
+      }
+    }
   },
   watch: {
     'input.time': {
       immediate: true,
       handler (val) {
         let arr = val.split(":")
-        this.clock.hours = arr[0] || ""
-        this.clock.minutes = arr[1] || ""
-        this.clock.seconds = arr[2] || ""
+        this.input.hours = arr[0] || ""
+        this.input.minutes = arr[1] || ""
+        this.input.seconds = arr[2] || ""
       }
     },
     clock: {
@@ -62,9 +66,9 @@ export default {
       let d = new Date()
       let hours = d.getHours().toString()
       let minutes = d.getMinutes().toString()
-      if (this.clock.seconds || (this.clock.hours == hours && this.clock.minutes == minutes)) this.clock.seconds = d.getSeconds().toString()
-      this.clock.minutes = minutes
-      this.clock.hours = hours
+      if (this.input.seconds || (this.input.hours == hours && this.input.minutes == minutes)) this.input.seconds = d.getSeconds().toString()
+      this.input.minutes = minutes
+      this.input.hours = hours
     },
     prependZero (str, len = 2) {
       let substr = ""

@@ -49,7 +49,7 @@
     </vue-input-date>
 
     <vue-input-time>
-      <template v-slot="{ id, input, clock, step, setNow }">
+      <template v-slot="{ id, input, step, setNow }">
         <div class="mb-3 row">
           <label :for="id" class="col-sm-2 col-form-label">Time</label>
           <div class="col-sm-10 dropdown">
@@ -59,16 +59,16 @@
                   <i class="bi bi-clock"></i>
                 </button>
                 <div class="dropdown-menu px-3">
-                  <label :for="id + '_hours'" class="form-label">{{ clock.hours || 'Hours' }}</label>
-                  <input v-model="clock.hours" type="range" class="form-range" min="0" max="23" :id="id + '_hours'">
-                  <label :for="id + '_minutes'" class="form-label">{{ clock.minutes || 'Minutes' }}</label>
-                  <input v-model="clock.minutes" type="range" class="form-range" min="0" max="59" :id="id + '_minutes'">
-                  <label :for="id + '_seconds'" class="form-label">{{ clock.seconds || 'Seconds' }}</label>
-                  <input v-model="clock.seconds" type="range" class="form-range" min="0" max="59" :id="id + '_seconds'">
+                  <label :for="id + '_hours'" class="form-label">{{ input.hours || 'Hours' }}</label>
+                  <input v-model="input.hours" type="range" class="form-range" min="0" max="23" :id="id + '_hours'">
+                  <label :for="id + '_minutes'" class="form-label">{{ input.minutes || 'Minutes' }}</label>
+                  <input v-model="input.minutes" type="range" class="form-range" min="0" max="59" :id="id + '_minutes'">
+                  <label :for="id + '_seconds'" class="form-label">{{ input.seconds || 'Seconds' }}</label>
+                  <input v-model="input.seconds" type="range" class="form-range" min="0" max="59" :id="id + '_seconds'">
                   <a class="dropdown-item text-center" href="#" @click.prevent="setNow">Set now</a>
                 </div>
               </div>
-              <input v-model="input.time" type="time" class="form-control" :id="id" name="time" :step="step">
+              <input v-model="input.time" type="time" class="form-control" name="time" :id="id" :step="step">
             </div>
           </div>
         </div>
