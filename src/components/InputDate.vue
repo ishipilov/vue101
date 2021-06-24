@@ -1,6 +1,18 @@
 <template>
-  <div :id="id">
-    <slot :input="input" :set-input="setInput" :date="date" :set-date="setDate" :prev="prevMonth" :today="today" :next="nextMonth" :table="table"></slot>
+  <div>
+    <slot :id="$options.name + _uid"
+          :input="input"
+          :today="today"
+          :view="view"
+          :d="d"
+          :prev-month="prevMonth"
+          :next-month="nextMonth"
+          :prev-year="prevYear"
+          :next-year="nextYear"
+          :calendar="calendar"
+          :change-view="changeView"
+          :change-date="changeDate"
+    ></slot>
   </div>
 </template>
 
@@ -10,67 +22,142 @@ import VueBaseComponent from '../components/BaseComponent.vue'
 export default {
   name: 'VueInputDate',
   extends: VueBaseComponent,
+  props: {
+    date: { type: String, default: "" }
+  },
   data () {
     return {
-      input: ""
+      input: {
+        date: this.date
+      },
+      today: this.todayDate(),
+      view: this.todayDate()
     }
   },
   computed: {
-    date () { return this.inputToDate(this.input) },
-    today () { return this.inputToDate("") },
+    d () {
+      if (this.input.date.length == 0) return null
+      let date = this.input.date ? new Date(this.input.date) : new Date()
+      date.setHours(0)
+      date.setMinutes(0)
+      date.setSeconds(0)
+      date.setMilliseconds(0)
+      return date
+    },
     prevMonth () {
-      let d = new Date(this.date.getFullYear(), this.date.getMonth(), 1)
-      let timestamp = d.setMonth(this.date.getMonth() - 1)
+      let d = new Date(this.view.getFullYear(), this.view.getMonth(), 1)
+      let timestamp = d.setMonth(this.view.getMonth() - 1)
       d = new Date(timestamp)
       let lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0)
-      if (this.date.getDate() > lastDate.getDate()) {
+      if (this.view.getDate() > lastDate.getDate()) {
         d.setDate(lastDate.getDate())
       } else {
-        d.setDate(this.date.getDate())
+        d.setDate(this.view.getDate())
       }
       return d
     },
     nextMonth () {
-      let d = new Date(this.date.getFullYear(), this.date.getMonth(), 1)
-      let timestamp = d.setMonth(this.date.getMonth() + 1)
+      let d = new Date(this.view.getFullYear(), this.view.getMonth(), 1)
+      let timestamp = d.setMonth(this.view.getMonth() + 1)
       d = new Date(timestamp)
       let lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0)
-      if (this.date.getDate() > lastDate.getDate()) {
+      if (this.view.getDate() > lastDate.getDate()) {
         d.setDate(lastDate.getDate())
       } else {
-        d.setDate(this.date.getDate())
+        d.setDate(this.view.getDate())
       }
       return d
     },
-    table () {
-      let year = this.date.getFullYear()
-      let month = this.date.getMonth()
+    prevYear () {
+      let d = new Date(this.view.getFullYear(), this.view.getMonth(), 1)
+      let timestamp = d.setFullYear(this.view.getFullYear() - 1)
+      d = new Date(timestamp)
+      let lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0)
+      if (this.view.getDate() > lastDate.getDate()) {
+        d.setDate(lastDate.getDate())
+      } else {
+        d.setDate(this.view.getDate())
+      }
+      return d
+    },
+    nextYear () {
+      let d = new Date(this.view.getFullYear(), this.view.getMonth(), 1)
+      let timestamp = d.setFullYear(this.view.getFullYear() + 1)
+      d = new Date(timestamp)
+      let lastDate = new Date(d.getFullYear(), d.getMonth() + 1, 0)
+      if (this.view.getDate() > lastDate.getDate()) {
+        d.setDate(lastDate.getDate())
+      } else {
+        d.setDate(this.view.getDate())
+      }
+      return d
+    },
+    calendar () {
+      let year = this.view.getFullYear()
+      let month = this.view.getMonth()
 
       let prevLastDate = new Date(year, month, 0)
       let prepend = this.range(prevLastDate.getDate(), 1).slice(prevLastDate.getDate() - (prevLastDate.getDay() || 7))
       prepend = prepend.map(e => e ? new Date(year, month - 1, e) : e)
       
       let lastDate = new Date(year, month + 1, 0)
-      let table = this.range(lastDate.getDate(), 1)
-      table = table.map(e => e ? new Date(year, month, e) : e)
+      let calendar = this.range(lastDate.getDate(), 1)
+      calendar = calendar.map(e => e ? new Date(year, month, e) : e)
 
       let append = this.range(7 - lastDate.getDay(), 1)
       append = append.map(e => e ? new Date(year, month + 1, e) : e)
 
-      if (this.batch([...prepend, ...table, ...append], 7).length < 6) {
+      if (this.batch([...prepend, ...calendar, ...append], 7).length < 6) {
         let append2 = this.range(7 + append.length, 1).slice(append.length)
         append2 = append2.map(e => e ? new Date(year, month + 1, e) : e)
 
-        table = [...prepend, ...table, ...append, ...append2]
+        calendar = [...prepend, ...calendar, ...append, ...append2]
       } else {
-        table = [...prepend, ...table, ...append]
+        calendar = [...prepend, ...calendar, ...append]
       }
 
-      return this.batch(table, 7)
+      return this.batch(calendar, 7)
+    }
+  },
+  watch: {
+    d: {
+      immediate: true,
+      handler () {
+        if (this.d) {
+          let d = this.d.getFullYear() + "-" + this.d.getMonth()
+          let v = this.view.getFullYear() + "-" + this.view.getMonth()
+          if (d != v) this.view = this.d
+        }
+      }
     }
   },
   methods: {
-    range (n, i = 0) { return Array.from(new Array(n), (v, k) => k + i) },
+    changeView (date) { this.view = date },
+    changeDate (date) { this.input.date = this.datetimeString(date, 1) },
+    todayDate () {
+      let date = new Date()
+      date.setHours(0)
+      date.setMinutes(0)
+      date.setSeconds(0)
+      date.setMilliseconds(0)
+      return date
+    },
+    datetimeString (date, index = 0) {
+      let m = date.getMonth() + 1
+      let d = date.getDate()
+      let h = date.getHours()
+      let i = date.getMinutes()
+      let s = date.getSeconds()
+      let dateStr = [date.getFullYear(), m, d].map(e => this.prependZero(e.toString())).join("-")
+      let timeStr = [h, i, s].map(e => this.prependZero(e.toString())).join(":")
+      let datetimeStr = [dateStr, timeStr].join(" ")
+      return [datetimeStr, dateStr, timeStr][index]
+    },
+    prependZero (str, len = 2) {
+      let substr = ""
+      if (str.length < len) substr = "0".repeat(len - str.length)
+      return substr + str
+    },
     batch (arr, n) {
       let result = []
       do {
@@ -78,28 +165,7 @@ export default {
       } while (arr.length > 0)
       return result
     },
-    inputToDate (str = "") {
-      let re = new RegExp(/^\d{4}-\d{1,2}-\d{1,2}$/) // YYYY-MM-DD or YYYY-M-D
-      let arr = str.match(re) ? str.split("-").map(e => parseInt(e)) : []
-      let date = new Date()
-      if (arr[0] != undefined) date.setFullYear(arr[0])
-      if (arr[1] != undefined) date.setMonth(arr[1] - 1)
-      if (arr[2] != undefined) date.setDate(arr[2])
-      date.setHours(0)
-      date.setMinutes(0)
-      date.setSeconds(0)
-      date.setMilliseconds(0)
-      return date
-    },
-    dateToInput (date) {
-      let m = date.getMonth() + 1
-      m = m.toString().length == 2 ? m : 0 + m.toString()
-      let d = date.getDate()
-      d = d.toString().length == 2 ? d : 0 + d.toString()
-      return [date.getFullYear(), m, d].join("-")
-    },
-    setDate (date) { this.input = this.dateToInput(date) },
-    setInput (value) { this.input = value }
+    range (n, i = 0) { return Array.from(new Array(n), (v, k) => k + i) }
   }
 }
 </script>
