@@ -3,7 +3,7 @@ export default {
   name: 'VueBaseComponent',
   data () {
     return {
-      uid: this.$options.name + this.$.uid
+      uid: `${this.$options.name}_${this.$.uid}`
     }
   }
 }

@@ -191,13 +191,13 @@ export default {
     },
     setNow () {
       let d = new Date()
-      let hours = d.getHours().toString()
-      let minutes = d.getMinutes().toString()
+      let hours = this.prependZero(d.getHours().toString())
+      let minutes = this.prependZero(d.getMinutes().toString())
       if (this.input.seconds || (this.input.hours == hours && this.input.minutes == minutes)) {
         this.input.seconds = this.prependZero(d.getSeconds().toString())
       }
-      this.input.minutes = this.prependZero(minutes.toString())
-      this.input.hours = this.prependZero(hours.toString())
+      this.input.minutes = minutes
+      this.input.hours = hours
     },
     datetimeString (date, index = 0) {
       let m = date.getMonth() + 1
