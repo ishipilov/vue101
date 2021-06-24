@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <vue-input-date>
       <template v-slot="{ id, input, today, view, d, prevMonth, nextMonth, prevYear, nextYear, calendar, changeView, changeDate }">
         <div class="mb-3 row">
@@ -75,43 +75,28 @@
       </template>
     </vue-input-time>
 
-    <vue-input-datetime>
-      <template v-slot="{ id }">
-        <div class="mb-3 row">
-          <label :for="id" class="col-sm-2 col-form-label">Datetime</label>
-          <div class="col-sm-10 dropdown">
-            <div class="input-group">
-              <div class="dropdown">
-                <button class="btn btn-link" type="button" :id="id" data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                  <i class="bi bi-calendar2"></i>
-                </button>
-                <div class="dropdown-menu px-3">
-                  ...
-                </div>
-              </div>
-              <input type="text" class="form-control" name="datetime" :step="step">
-            </div>
-          </div>
-        </div>
-      </template>
-    </vue-input-datetime>
+    <slot :id="uid"
+
+    ></slot>
   </div>
 </template>
 
 <script>
-import VueInputDate from './components/InputDate.vue'
-import VueInputTime from './components/InputTime.vue'
-import VueInputDatetime from './components/InputDatetime.vue'
+import VueBaseComponent from '../components/BaseComponent.vue'
+import VueInputDate from '../components/InputDate.vue'
+import VueInputTime from '../components/InputTime.vue'
 
 export default {
-  name: 'Demo',
+  name: 'VueInputDatetime',
+  extends: VueBaseComponent,
   components: {
     VueInputDate,
-    VueInputTime,
-    VueInputDatetime
+    VueInputTime
+  },
+  data () {
+    return {
+      
+    }
   }
 }
 </script>
-
-<style scoped>
-</style>

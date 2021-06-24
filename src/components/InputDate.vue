@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot :id="$options.name + _uid"
+    <slot :id="uid"
           :input="input"
           :today="today"
           :view="view"
